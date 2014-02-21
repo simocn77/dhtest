@@ -1,6 +1,11 @@
 DHTEST README
 -------------
 
+Description: DHCP client simulation
+ dhtest can simulate multiple DHCP clients behind a network
+ device. It can help in testing the DHCP servers or in testing
+ switch/router by loading the device with multiple DHCP clients.`
+
 1. Run 'make' command on shell to complile and build dhtest.
 
 2. Run 'make clean' to remove dhtest
