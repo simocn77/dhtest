@@ -33,3 +33,9 @@ test: test.o
 
 clean:
 	rm -f dhtest *.o
+
+all:
+	make clean
+	make dhtest
+	make test
+	 date
