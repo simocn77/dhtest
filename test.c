@@ -31,13 +31,14 @@ macchanger -l | grep Bticin
 int new_rand_mach (char *mac)
 {
         int fd;
+        int res = 0 ;
 	unsigned char data[RAND_LEN] = "";
 
 	//char mac[10]="";
 
         fd = open ("/dev/urandom", O_RDONLY);
         if (fd > 0)
-		read( fd, data, RAND_LEN );
+		res = read( fd, data, RAND_LEN );
         close (fd);
 
 	sprintf(mac,"00:03:50:%02X:%02X:%02X", data[0], data[1], data[2]);
@@ -46,7 +47,7 @@ int new_rand_mach (char *mac)
         data [0] &= 0xfe;       /* clear multicast bit */
         data [0] |= 0x02;       /* set local assignment bit (IEEE802) */
 
-        return 1;
+        return res;
 }
 
 /*
@@ -75,18 +76,28 @@ int main(int argc, char *argv[])
 	fp1 = fopen("input.sh", "w+");
 	fprintf(fp1,"#!/bin/bash\n\n");
 
+	printf("argc %i \n", argc);
+	printf("argv[0] %s \n", argv[0]);
+	printf("argv[1] %s \n", argv[1]);
+	printf("argv[2] %s \n", argv[2]);
+	printf("argv[3] %s \n", argv[3]);
+	printf("argv[4] %s \n", argv[4]);
+	printf("argv[5] %s \n", argv[5]);
+
 	if(argc <= 1 ) {
 		new_rand_mach( mac );
 		new_hostname( hostn, 0 );
 		/* printf("%s , %s\n", mac, hostn); */
-		fprintf(fp1,"sudo ./dhtest  -V -m  %s -h %s\n", mac, hostn);
+		fprintf(fp1,"sudo ./dhtest  -V -m  %s -h %s 2>&1\n", mac, hostn);
+		fprintf(fp1,"killall dhtest\n");
         }
 	else {
 		for(i = 0; i < atoi(argv[1]); i++){
 			new_rand_mach( mac );
 			new_hostname( hostn, i );
 			/* printf("%s , %s\n", mac, hostn); */
-			fprintf(fp1,"sudo ./dhtest  -V -m  %s -h %s\n", mac, hostn);
+			fprintf(fp1,"sudo ./dhtest  -V -m  %s -h %s 2>&1\n", mac, hostn);
+			fprintf(fp1,"killall dhtest\n");
 		}
 	}
 
