@@ -38,8 +38,8 @@ function hosts() {
 for (( i=1; i<=$ncycle; i++ ))
 do
 	echo -e "\n Execute $i times \n"
-	"sudo ./dhtest -m" $(randomMAC) "-h" $(hosts $hostbase $i) "2>&1"
-	"killall dhtest"
+	sudo ./dhtest -m $(randomMAC) -h $(hosts $hostbase $i) 2>&1
+	killall dhtest
 done
 
 #sudo ./dhtest -m  00:03:50:51:5A:B8 -h host-0 2>&1
