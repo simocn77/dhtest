@@ -32,10 +32,10 @@ test: test.o
 #	install -m 0755 dhtest $(prefix)/sbin
 
 clean:
-	rm -f dhtest *.o
+	rm -f dhtest *.o 0*
 
 all:
 	make clean
 	make dhtest
 	make test
-	 date
+	date
