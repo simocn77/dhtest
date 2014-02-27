@@ -337,7 +337,7 @@ extern u_int16_t fqdn_s;
 
 extern u_int32_t dhcp_xid;
 extern int bcast_flag;
-extern int timeout;
+//extern int timeout;
 extern u_int8_t padding_flag;
 extern const char *vci_buff;
 extern const char *hostname_buff;

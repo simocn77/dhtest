@@ -128,6 +128,9 @@ int main(int argc, char *argv[])
 		exit(2);
 	}
 
+	/* Reset (init) the dhopt buffer to build DHCP packet  */
+	reset_dhopt_size();
+
 	init_rand();
 	atexit(cleanup);
 	signal(SIGSEGV, sigcleanup);
@@ -177,11 +180,11 @@ int main(int argc, char *argv[])
 			break;
 		}
 		switch(get_cmd) {
-			case 'q':
+			case 'q': /*"quiet"*/
 				quiet = 1;
 				break;
 
-			case 'm':
+			case 'm': /*"mac"*/
 				{
 					u_char aux_dhmac[ETHER_ADDR_LEN + 1];
 
@@ -197,7 +200,7 @@ int main(int argc, char *argv[])
 				}
 				break;
 
-			case 'R':
+			case 'R': /*"random-mac"*/
 				{
 					int i;
 
@@ -212,7 +215,7 @@ int main(int argc, char *argv[])
 				}
 				break;
 
-			case 'F':
+			case 'F': /*"log-filename"*/
 				if (strlen(optarg) > sizeof(dhmac_fname) - 1) {
 					fprintf(stderr, "-F filename given is too long\n");
 					exit(2);
@@ -221,11 +224,11 @@ int main(int argc, char *argv[])
 				dhmac_fname_flag = 1;
 				break;
 
-			case 'i':
+			case 'i': /*"interface"*/
 				iface_name = optarg;
 				break;
 
-			case 'v':
+			case 'v': /*"vlan"*/
 				if(atoi(optarg) < 1 || atoi(optarg) > 4095)
 				{
 					fprintf(stderr, "VLAN ID is not valid. Range 1 to 4095\n");
@@ -235,24 +238,24 @@ int main(int argc, char *argv[])
 				l2_hdr_size = 18;
 				break;
 
-			case 'r':
+			case 'r': /*"release"*/
 				dhcp_release_flag = 1;
 				break;
 
-			case 'Q':
+			case 'Q': /*"request-only"*/
 				dhcp_request_flag = 1;
 				break;
 
-			case 'b':
+			case 'b': /*"bind-ip"*/
 				ip_listen_flag = 1;
 				break;
 
-			case 'k':
+			case 'k': /*"bind-timeout"*/
 				listen_timeout = atoi(optarg);
 				tval_listen.tv_sec = listen_timeout;
 				break;
 
-			case 'x':
+			case 'x': /*"dhcp_xid"*/
 				{
 					u_int32_t aux_dhcp_xid[2];
 					aux_dhcp_xid[0] = 0;
@@ -261,7 +264,7 @@ int main(int argc, char *argv[])
 				}
 				break;
 
-			case 't':
+			case 't': /*"tos"*/
 				if(atoi(optarg) >= 256 || atoi(optarg) < 0) {
 					fprintf(stderr, "Invalid TOS value\n");
 					exit(2);
@@ -269,15 +272,15 @@ int main(int argc, char *argv[])
 				l3_tos = atoi(optarg);
 				break;
 
-			case 'L':
+			case 'L': /*"option51-lease_time"*/
 				option51_lease_time = atoi(optarg);
 				break;
 
-			case 'I':
+			case 'I': /*"option50-ip"*/
 				option50_ip = inet_addr(optarg);
 				break;
 
-			case 'o':
+			case 'o': /*"option60-vci"*/
 				if(strlen(optarg) >= 256) {
 					fprintf(stderr, "VCI string size should be less than 256\n");
 					exit(2);
@@ -286,7 +289,7 @@ int main(int argc, char *argv[])
 				vci_buff = optarg;
 				break;
 
-			case 'h':
+			case 'h': /*"option12-hostname"*/
 				if(strlen(optarg) >= 256) {
 					fprintf(stderr, "Hostname string size should be less than 256\n");
 					exit(2);
@@ -295,7 +298,7 @@ int main(int argc, char *argv[])
 				hostname_buff = optarg;
 				break;
 
-			case 'd':
+			case 'd': /*"fqdn-domain-name"*/
 				if(strlen(optarg) >= 253) {
 					fprintf(stderr, "FQDN domain name string size should be less than 253\n");
 					exit(2);
@@ -304,15 +307,15 @@ int main(int argc, char *argv[])
 				fqdn_buff = optarg;
 				break;
 
-			case 'n':
+			case 'n': /*"fqdn-server-not-update"*/
 				fqdn_n = 1;
 				break;
 
-			case 's':
+			case 's': /*"fqdn-server-update-a"*/
 				fqdn_s = 1;
 				break;
 
-			case 'T':
+			case 'T': /*"timeout"*/
 				if(atoi(optarg) < 5 || atoi(optarg) > 3600) {
 					fprintf(stderr, "Invalid timout value. Range 5 to 3600\n");
 					exit(2);
@@ -320,7 +323,7 @@ int main(int argc, char *argv[])
 				timeout = atoi(optarg);
 				break;
 
-			case 'P':
+			case 'P': /*"port"*/
 				if(atoi(optarg) <=0 || atoi(optarg) > 65535) {
 					fprintf(stderr, "Invalid port value. Range 1 to 65535\n");
 					exit(2);
@@ -328,27 +331,27 @@ int main(int argc, char *argv[])
 				port = atoi(optarg);
 				break;
 
-			case 'g':
+			case 'g': /*"giaddr"*/
 				giaddr = optarg;
 				break;
 
-			case 'S':
+			case 'S': /*"server"*/
 				server_addr = optarg;
 				break;
 
-			case 'p':
+			case 'p': /*"padding"*/
 				padding_flag = 1;
 				break;
 
-			case 'f':
+			case 'f': /*"bcast_flag"*/
 				bcast_flag = htons(0x8000);
 				break;
 
-			case 'V':
+			case 'V': /*"verbose"*/
 				verbose = 1;
 				break;
 
-			case 'u':
+			case 'u': /*"unicast"*/
 				if (optarg) {
 					struct in_addr out;
 
@@ -361,7 +364,7 @@ int main(int argc, char *argv[])
 				unicast_flag = 1;
 				break;
 
-			case 'a':
+			case 'a': /*"nagios"*/
 				nagios_flag = 1;
 				break;
 
@@ -461,10 +464,19 @@ int main(int argc, char *argv[])
 	build_dhpacket(DHCP_MSGDISCOVER);	/* Build DHCP discover packet */
 
 	int dhcp_offer_state = 0;
+	int retry =0;
 	while(dhcp_offer_state != DHCP_OFFR_RCVD) {
-
+		
 		/* Sends DHCP discover packet */
 		send_packet(DHCP_MSGDISCOVER);
+		
+		if (retry < 3 ) 
+			retry ++;
+		else{
+			printf(" Abort to much retry\n - ");
+			return -1;
+		}
+
 		/*
 		 * recv_packet functions returns when the specified 
 		 * packet is received
@@ -507,13 +519,22 @@ request:
 		build_option51();                       /* Option51 - DHCP lease time requested */
 	}
 	build_option55();
-	build_optioneof();
+	build_optioneof();						/* End of option */
 	build_dhpacket(DHCP_MSGREQUEST); 		/* Builds specified packet */
+
 	int dhcp_ack_state = 1;
+	retry =0;
 	while(dhcp_ack_state != DHCP_ACK_RCVD) { 
 
 		send_packet(DHCP_MSGREQUEST);
 		dhcp_ack_state = recv_packet(DHCP_MSGACK); 
+
+		if (retry < 3 ) 
+			retry ++;
+		else{
+			printf(" Abort to much retry\n - ");
+			return -1;
+		}
 
 		if(timeout) {
 			time_now = time(NULL);
@@ -546,6 +567,7 @@ request:
 			}
 		}
 	}
+
 	/* If IP listen flag is enabled, Listen on obtained for ARP, ICMP protocols  */
 	if(!nagios_flag && ip_listen_flag) {
 		if (!quiet) {

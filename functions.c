@@ -144,7 +144,7 @@ u_int32_t get_interface_address()
  */
 int send_packet(int pkt_type)
 {
-	int ret;
+	int ret = 0 ;
 	switch (pkt_type) {
 		case DHCP_MSGDISCOVER:
 		case DHCP_MSGREQUEST:
@@ -185,17 +185,17 @@ int send_packet(int pkt_type)
 	if(pkt_type == DHCP_MSGDISCOVER) {
 		if (!nagios_flag && !quiet) {
 			printf("DHCP discover sent\t - ");
-			printf("Client MAC : " ETH_F_FMT "\n", ETH_F_ARG(dhmac));
+			printf("Client MAC : " ETH_F_FMT " PacketSize : %i \n", ETH_F_ARG(dhmac),ret);
 		}
 	} else if (pkt_type == DHCP_MSGREQUEST) {
 		if (!nagios_flag && !quiet) {
 			printf("DHCP request sent\t - ");
-			printf("Client MAC : " ETH_F_FMT "\n", ETH_F_ARG(dhmac));
+			printf("Client MAC : " ETH_F_FMT " PacketSize : %i \n", ETH_F_ARG(dhmac),ret);
 		}
 	} else if (pkt_type == DHCP_MSGRELEASE) { 
 		if (!nagios_flag && !quiet) {
 			printf("DHCP release sent\t - ");
-			printf("Client MAC : " ETH_F_FMT "\n", ETH_F_ARG(dhmac));
+			printf("Client MAC : " ETH_F_FMT " PacketSize : %i \n", ETH_F_ARG(dhmac),ret);
 		}
 	}
 	return 0;
